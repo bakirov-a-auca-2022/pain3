@@ -24,9 +24,33 @@ std::map<std::string, char>  read_codes(const std::string& path){
     return codes;
 }
 
+std::string read_bin(const std::string& path) {
+    std::string binStr;
+    std::ifstream file(path, std::ios::binary);
+    char byte;
+    while (file.get(byte)) {
+        for (int i = 7; i >= 0; i--) {
+            char bit = ((byte >> i) & 1) + '0';
+            binStr += bit;
+        }
+    }
+
+    return binStr;
+}
+
 std::string decode (std::map<std::string, char>& codes, const std::string& path){
     std::string res;
-    //TODO: implement. The decoded text should be symbol to symbol the same as the original one, EXCEPT for an extra symbol at the end.
+    std::string bin = read_bin(path);
+    std::string currentCode;
+
+    for (char c : bin) {
+        currentCode += c;
+        if (codes.count(currentCode)) {
+            res += codes[currentCode];
+            currentCode.clear();
+        }
+    }
+
     return res;
 }
 

@@ -18,7 +18,6 @@ struct HuffmanNode {
         symbol = '\0';
     }
 
-
     bool operator<(const HuffmanNode& other) const {
         return data < other.data;
     }
@@ -77,11 +76,23 @@ std::shared_ptr<HuffmanNode> construct_huffman_tree(std::set<std::shared_ptr<Huf
     return *all_letter_nodes.begin();
 }
 
+void generate_codes_recursive(const std::shared_ptr<HuffmanNode>& node, std::map<char, std::string>& codes, const std::string& currentCode) {
+    if (node->left == nullptr && node->right == nullptr) {
+        codes[node->symbol] = currentCode;
+        return;
+    }
+
+    if (node->left != nullptr) {
+        generate_codes_recursive(node->left, codes, currentCode + "0");
+    }
+    if (node->right != nullptr) {
+        generate_codes_recursive(node->right, codes, currentCode + "1");
+    }
+}
 
 std::map<char, std::string> generate_codes(const std::shared_ptr<HuffmanNode>& tree){
     std::map<char, std::string> codes;
-    //TODO: generate pairs of <char, code> for each leaf in the tree.
-    // Important: the codes should be as short, as possible. See example codes in encoded_pairs_ex.txt
+    generate_codes_recursive(tree, codes, "");
     return codes;
 }
 
